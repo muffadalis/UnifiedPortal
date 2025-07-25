@@ -86,4 +86,8 @@
     <Content Include="SharedAssets\scripts\WebForms\WebUIValidation.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
