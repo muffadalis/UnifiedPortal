@@ -11,7 +11,15 @@ namespace LegacyWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                SessionTextBox.Text = Session["Mumin_ID"]?.ToString() ?? string.Empty;
+            }
+        }
 
+        protected void SubmitSessionButton_Click(object sender, EventArgs e)
+        {
+            Session["Mumin_ID"] = SessionTextBox.Text;
         }
     }
 }

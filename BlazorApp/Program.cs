@@ -3,6 +3,20 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSystemWebAdapters()
+    .AddJsonSessionSerializer(options =>
+    {
+        options.RegisterKey<string>("MachineName");
+        options.RegisterKey<DateTime>("SessionStartTime");
+        options.RegisterKey<string>("Mumin_ID");
+    })
+    .AddRemoteAppClient(options =>
+    {
+        options.RemoteAppUrl = new(builder.Configuration["RemoteAppUri"]);
+        options.ApiKey = builder.Configuration["RemoteAppApiKey"];
+    })
+    .AddSessionClient();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -19,7 +33,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.UseAntiforgery();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -29,7 +42,10 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/SharedAssets"
 });
 
+app.UseSystemWebAdapters();
+
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .RequireSystemWebAdapterSession();
 
 app.Run();
